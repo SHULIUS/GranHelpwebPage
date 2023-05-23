@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if
+          request.time < timestamp.date(2023, 6, 21) &&
+          isValidPassword(request.resource.data.password);
+    }
+  }
+  
+  // Restricciones personalizadas para la contraseña
+  function isValidPassword(password) {
+    // Cambia las restricciones de los dígitos según tus necesidades
+    return password.matches("[0-9]{5,12}"); // Se permiten contraseñas de 5 a 12 dígitos
+  }
+}
